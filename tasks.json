@@ -1,0 +1,23 @@
+[
+  {
+    "id": 1,
+    "description": "ซื้อขนม",
+    "status": "todo",
+    "createdAt": "2026-03-05T15:26:18.772Z",
+    "updatedAt": "2026-03-05T15:26:18.773Z"
+  },
+  {
+    "id": 2,
+    "description": "กวาดบ้าน",
+    "status": "todo",
+    "createdAt": "2026-03-05T15:26:19.886Z",
+    "updatedAt": "2026-03-05T15:26:19.886Z"
+  },
+  {
+    "id": 3,
+    "description": "ซื้อของ",
+    "status": "todo",
+    "createdAt": "2026-03-05T15:27:21.250Z",
+    "updatedAt": "2026-03-05T15:27:21.251Z"
+  }
+]
