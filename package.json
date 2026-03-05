@@ -1,0 +1,24 @@
+{
+  "name": "task-tracker",
+  "version": "1.0.0",
+  "main": "index.js",
+  "bin": {
+    "task-cli": "./index.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pachara-n/task-tracker-cli.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/pachara-n/task-tracker-cli/issues"
+  },
+  "homepage": "https://github.com/pachara-n/task-tracker-cli#readme",
+  "description": ""
+}
