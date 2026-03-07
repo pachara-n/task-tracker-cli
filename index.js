@@ -21,8 +21,10 @@ function saveTasks() {
 }
 
 function addTask(task) {
-  // สร้าง id ง่ายๆ ด้วยการนับจำนวน task ที่มีอยู่แล้วบวก 1
-  const newId = tasks.length + 1;
+  // สร้าง id และป้องกันการซ้ำถ้าลบด้วยการหา ID สูงสุดแล้วบวก 1
+  const newId = tasks.length > 0 
+    ? Math.max(...tasks.map(t => t.id)) + 1 
+    : 1;
 
   const newTask = {
     id: newId,
