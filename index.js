@@ -21,6 +21,12 @@ function saveTasks() {
 }
 
 function addTask(task) {
+  // Validate ว่าต้องมี description
+  if (!task || task.trim() === "") {
+    console.log("Error: Please provide a task description");
+    return;
+  }
+
   // สร้าง id และป้องกันการซ้ำถ้าลบด้วยการหา ID สูงสุดแล้วบวก 1
   const newId = tasks.length > 0 
     ? Math.max(...tasks.map(t => t.id)) + 1 
@@ -41,13 +47,18 @@ function addTask(task) {
 
 function markTaskStatus(idString, newStatus) {
   if (!idString) {
-    console.log(
-      `Please input ID! (Ex. task-cli mark-${newStatus === "done" ? "done" : "in-progress"} 1)`,
-    );
+    console.log("Error: Please provide task ID");
     return;
   }
 
   const targetId = parseInt(idString);
+  
+  // ตรวจสอบว่า ID เป็นตัวเลขที่ valid
+  if (isNaN(targetId)) {
+    console.log("Error: ID must be a number");
+    return;
+  }
+
   const index = tasks.findIndex((task) => task.id === targetId);
   // ถ้าหาเจอ (findIndex ถ้าหาไม่เจอมันจะคืนค่า -1)
   if (index !== -1) {
@@ -56,35 +67,61 @@ function markTaskStatus(idString, newStatus) {
     saveTasks();
     console.log(`Task ${targetId} marked as ${newStatus}`);
   } else {
-    console.log(`Not found ID: ${targetId}`);
+    console.log(`Error: Task with ID ${targetId} not found`);
   }
 }
 
 function updateDescription(idString, newDescription) {
   if (!idString) {
-    console.log("plese input ID! (Ex. task-cli update 1)");
+    console.log("Error: Please provide task ID");
     return;
   }
+
+  if (!newDescription || newDescription.trim() === "") {
+    console.log("Error: Please provide new description");
+    return;
+  }
+
   const targetId = parseInt(idString);
+  
+  if (isNaN(targetId)) {
+    console.log("Error: ID must be a number");
+    return;
+  }
+
   const index = tasks.findIndex((task) => task.id === targetId);
   if (index !== -1) {
     tasks[index].description = newDescription;
     tasks[index].updatedAt = new Date().toISOString();
     saveTasks();
-    console.log(`Task ${targetId} update description successfully`);
+    console.log(`Task ${targetId} updated successfully`);
+  } else {
+    console.log(`Error: Task with ID ${targetId} not found`);
   }
 }
 
 function deleteTask(idString) {
+  if (!idString) {
+    console.log("Error: Please provide task ID");
+    return;
+  }
+
   const targetId = parseInt(idString);
-  // Check if exis before delete
+  
+  if (isNaN(targetId)) {
+    console.log("Error: ID must be a number");
+    return;
+  }
+
+  // เช็คว่ามีก่อนลบ โดยนับจำนวน
   const currentCount = tasks.length;
   tasks = tasks.filter((task) => task.id !== targetId);
+  
   if (tasks.length === currentCount) {
-    console.log(`Not found ID: ${targetId}`);
+    console.log(`Error: Task with ID ${targetId} not found`);
   } else {
     saveTasks();
-    console.log("remove task successfully");
+    console.log(`Task ${targetId} deleted successfully`);
   }
 }
 
@@ -93,7 +130,39 @@ function listTask(status) {
   const taskToShow = status
     ? tasks.filter((task) => task.status === status)
     : tasks;
-  console.log("tasks: ", taskToShow);
+
+  if (taskToShow.length === 0) {
+    const message = status 
+      ? `No tasks found with status "${status}"` 
+      : "No tasks found";
+    console.log(message);
+    return;
+  }
+
+  // แสดงผลแบบอ่านง่าย พร้อมเลข ID, description และ status
+  console.log("\nTasks:");
+  console.log("=".repeat(50));
+  taskToShow.forEach(task => {
+    console.log(`[${task.id}] ${task.description}`);
+    console.log(`  Status: ${task.status} | Updated: ${new Date(task.updatedAt).toLocaleString()}`);
+  });
+  console.log("=".repeat(50) + "\n");
+}
+
+function showHelp() {
+  console.log("\nTask Tracker CLI - Usage:\n");
+  console.log("  task-cli add <description>           - Add a new task");
+  console.log("  task-cli list [status]               - List all tasks or filter by status");
+  console.log("                                         (status: todo, in-progress, done)");
+  console.log("  task-cli update <id> <description>   - Update task description");
+  console.log("  task-cli delete <id>                 - Delete a task");
+  console.log("  task-cli mark-done <id>              - Mark task as done");
+  console.log("  task-cli mark-in-progress <id>       - Mark task as in-progress");
+  console.log("\nExamples:");
+  console.log('  task-cli add "Buy groceries"');
+  console.log('  task-cli list todo');
+  console.log('  task-cli update 1 "Buy organic groceries"');
+  console.log('  task-cli mark-done 1\n');
 }
 
 const command = process.argv[2];
@@ -114,4 +183,5 @@ if (command === "add") {
   deleteTask(idOrTitle);
 } else {
   console.log("Invalid command");
+  showHelp();
 }
